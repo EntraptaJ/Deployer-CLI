@@ -1,17 +1,17 @@
 // src/Modules/Services/Service.ts
 export enum ServiceNetworkType {
-  'DHCP' = 'DCHP',
+  'DHCP' = 'DHCP',
   'STATIC' = 'STATIC',
 }
 
 export interface ServiceNetwork {
   type: ServiceNetworkType;
 
-  ipAddress: string;
+  cidrIPAddress: string;
 
   gateWayAddress: string;
 
-  subnetAddress: string;
+  dnsServer: string;
 }
 
 export interface Service {

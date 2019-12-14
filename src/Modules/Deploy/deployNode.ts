@@ -7,6 +7,7 @@ import { loadSession } from '../Controller/vCenter';
 import { pushNode } from '../Nodes';
 import { initialProvision } from '../Provisioner/SSH/Actions';
 import { getService, getServices } from '../Services';
+import { configureNetworking } from '../OS';
 
 /**
  * Prompts the user for what Service they want to deploy a new node of.
@@ -71,4 +72,6 @@ export async function deployNode(): Promise<void> {
 
   await initialProvision(newNodeId);
   await processConfigurationFile(newNodeId);
+
+  await configureNetworking(newNodeId);
 }

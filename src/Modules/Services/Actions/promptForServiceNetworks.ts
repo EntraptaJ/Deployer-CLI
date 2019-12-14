@@ -15,7 +15,7 @@ const networkQuestions: QuestionCollection<Answers>[] = [
     ),
   },
   {
-    name: 'ipAddress',
+    name: 'cidrIPAddress',
     type: 'input',
   },
   {
@@ -23,7 +23,7 @@ const networkQuestions: QuestionCollection<Answers>[] = [
     type: 'input',
   },
   {
-    name: 'subnetAddress',
+    name: 'dnsServer',
     type: 'input',
   },
 ];

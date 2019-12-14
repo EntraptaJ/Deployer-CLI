@@ -15,6 +15,8 @@ import {
 } from '../Services';
 import { state } from '../State';
 import { promptForService } from '../Services/Prompts';
+import { promptForNode } from '../Nodes/Prompts';
+import { configureNetworking } from '../OS';
 
 /**
  * CLI Command Option
@@ -167,6 +169,15 @@ export const actions: Action[] = [
     action: async () => {
       const serviceId = await promptForService();
       await preformLifecycle(serviceId);
+    },
+  },
+  {
+    command: 'lab:os:network',
+    description: 'Lab OS Networking configuration',
+    action: async () => {
+      const nodeId = await promptForNode();
+
+      await configureNetworking(nodeId);
     },
   },
 ];

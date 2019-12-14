@@ -8,6 +8,7 @@ import {
   configurationModeProhibitedActions,
 } from '../ConfigurationFile';
 import { readConfigurationFile } from './';
+import { getOS } from '../../OS';
 
 /**
  *
@@ -34,15 +35,15 @@ export async function processConfigurationFile(
 
   const guestInfo = await vCSA.getGuestInfo(nodeId);
 
+  const nodeOS = getOS('UBUNTU');
+
   const sshClient = await loginSSH(guestInfo.ip_address);
 
   spinner.start('Installing Configuration Packages');
 
   async function processInstalls(packages: string[]) {
-    console.log('Installing Packages', packages.join(' '));
-
     return sshClient.exec(
-      `apt update && DEBIAN_FRONTEND=noninteractive apt-get install -y ${packages.join(
+      `${nodeOS.commands.update} && ${nodeOS.commands.install} ${packages.join(
         ' ',
       )}`,
     );
