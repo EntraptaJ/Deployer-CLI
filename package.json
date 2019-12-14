@@ -1,17 +1,17 @@
 {
-  "name": "ts-cli-template",
+  "name": "deployer",
   "version": "0.0.1",
-  "description": "TypeScript based CLI template",
+  "description": "Command line tool for deployment, provisioning, and configuration of virtual machines",
   "main": "dist/index.js",
   "bin": {
-    "ts-cli": "dist/index.js"
+    "deployer": "dist/index.js"
   },
   "scripts": {
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
     "dev": "ts-node src/index.ts",
     "create": "rm -rf ./dist && npm run build && npm run test",
     "build": "tsc -p ./tsconfig.build.json",
-    "test": "sudo npm i -g && ts-cli",
+    "test": "sudo npm i -g && deployer",
     "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
   },
   "repository": {
@@ -30,15 +30,22 @@
   },
   "homepage": "https://github.com/K-FOSS/TS-CLI-Template#readme",
   "devDependencies": {
+    "@types/fs-extra": "^8.0.1",
+    "@types/inquirer": "^6.5.0",
     "@types/node": "^12.12.17",
-    "@types/yargs": "^13.0.3",
+    "@types/yaml": "^1.2.0",
     "nodemon": "^2.0.2",
     "ts-node": "^8.5.4",
     "typescript": "^3.7.3"
   },
   "dependencies": {
+    "@johnls/ssh2-promise": "^1.0.0",
     "commander": "^4.0.1",
     "conf": "^6.2.0",
-    "yargs": "^15.0.2"
+    "fs-extra": "^8.1.0",
+    "inquirer": "^7.0.0",
+    "ora": "^4.0.3",
+    "ts-vcenter": "^0.3.11",
+    "yaml": "^1.7.2"
   }
 }

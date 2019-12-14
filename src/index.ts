@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 // src/index.ts
 import program from 'commander';
-import { actions } from './Actions';
+import { actions } from './Modules/Actions';
 import { isArray } from 'util';
 
 program
   .version('0.0.1')
-  .description('TypeScript Example CLI for usage in other projects');
+  .description(
+    'Command line tool for deployment, provisioning, and configuration of virtual machines',
+  );
 
 for (const action of actions) {
   let depth = program;

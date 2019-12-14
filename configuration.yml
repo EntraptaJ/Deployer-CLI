@@ -1,0 +1,17 @@
+install:
+  - apt-transport-https
+  - ca-certificates
+  - curl
+  - gnupg-agent
+  - software-properties-common
+  - git
+exec:
+  - 'mkdir data'
+  - 'git clone http://KristianFJones:${_GITHUB_TOKEN}@github.com/KristianFJones/Gaming-Server-LC.git'
+  - 'wget --quiet -O - https://download.docker.com/linux/ubuntu/gpg | apt-key add -'
+  - 'sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"'
+  - 'sudo apt-get update'
+  - 'sudo apt-get install -y docker-ce docker-ce-cli docker-compose containerd.io'
+  - 'sudo curl -L "https://github.com/docker/compose/releases/download/1.24.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose'
+  - 'sudo chmod +x /usr/local/bin/docker-compose'
+  - 'cd Gaming-Server-LC'
