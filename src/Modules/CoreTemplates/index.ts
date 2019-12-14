@@ -2,3 +2,4 @@
 export * from './CoreTemplate';
 export * from './createCoreTemplate';
 export * from './getCoreTemplates';
+export * from './getCoreTemplate';

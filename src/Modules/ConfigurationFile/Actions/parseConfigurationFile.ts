@@ -1,5 +1,5 @@
 // src/Modules/ConfigurationFile/parseConfigurationFile.ts
-import { Configuration, ConfigurationFile } from './ConfigurationFile';
+import { Configuration, ConfigurationFile } from '../ConfigurationFile';
 import { parse } from 'yaml';
 
 export function parseConfigurationFile(file: string): Configuration {

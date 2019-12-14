@@ -5,4 +5,6 @@ export interface Node {
   id: string;
 
   coreTemplateId: string;
+
+  serviceId: string;
 }

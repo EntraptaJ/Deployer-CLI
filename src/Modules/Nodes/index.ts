@@ -4,3 +4,4 @@ export * from './NodeInfoMenu';
 export * from './getNodes';
 export * from './pushNewNode';
 export * from './saveNodes';
+export * from './getNode';

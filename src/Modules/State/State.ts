@@ -33,6 +33,38 @@ export const state = new Conf({
         coreTemplateId: {
           type: 'string',
         },
+
+        serviceId: {
+          type: 'string',
+        },
+      },
+    },
+    services: {
+      type: 'array',
+      properties: {
+        name: {
+          type: 'string',
+        },
+
+        coreTemplateId: {
+          type: 'string',
+        },
+
+        networkId: {
+          type: 'string',
+        },
+
+        dataStoreId: {
+          type: 'string',
+        },
+
+        hostId: {
+          type: 'string',
+        },
+
+        id: {
+          type: 'string',
+        },
       },
     },
     coreTemplates: {
@@ -51,6 +83,17 @@ export const state = new Conf({
         },
 
         itemId: {
+          type: 'string',
+        },
+      },
+    },
+    ssh: {
+      type: 'object',
+      properties: {
+        privKey: {
+          type: 'string',
+        },
+        pubKey: {
           type: 'string',
         },
       },

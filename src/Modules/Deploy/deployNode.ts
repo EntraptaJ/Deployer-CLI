@@ -1,64 +1,29 @@
 // src/Modules/Deploy/deployNode.ts
-import { getNetworks, loadSession, createSession } from '../Controller/vCenter';
+import { loadSession, createSession } from '../Controller/vCenter';
 import inquirer from 'inquirer';
 import Choice from 'inquirer/lib/objects/choice';
-import { getDataStores } from '../Controller/vCenter/DataStore';
-import { getCoreTemplates } from '../CoreTemplates';
-import { getHosts } from '../Controller/vCenter/Host';
-import { pushNewNode } from '../Nodes/pushNewNode';
 import ora from 'ora';
+import { initialProvision } from '../Provisioner/SSH/Actions';
+import { getServices, getService } from '../Services';
+import { pushNewNode } from '../Nodes';
 
 export async function deployNode(): Promise<void> {
   const credentials = await loadSession();
 
   const vCSA = await createSession(credentials);
 
-  const [networks, datastores, coreTemplates, hosts] = await Promise.all([
-    getNetworks(vCSA),
-    getDataStores(vCSA),
-    getCoreTemplates(),
-    getHosts(vCSA),
-  ]);
-
-  const {
-    nodeNetwork,
-    nodeDatastore,
-    coreTemplateId,
-    name,
-    host,
-  } = await inquirer.prompt([
-    {
-      type: 'input',
-      name: 'name',
-    },
-
+  const { serviceId } = await inquirer.prompt([
     {
       type: 'list',
-      name: 'host',
-      choices: hosts.map(({ name, host }) => ({ name, value: host } as Choice)),
-    },
-    {
-      type: 'list',
-      name: 'nodeNetwork',
-      choices: networks.map(
-        ({ name, network }) => ({ name, value: network } as Choice),
-      ),
-    },
-    {
-      type: 'list',
-      name: 'nodeDatastore',
-      choices: datastores.map(
-        ({ name, datastore }) => ({ name, value: datastore } as Choice),
-      ),
-    },
-    {
-      type: 'list',
-      name: 'coreTemplateId',
-      choices: coreTemplates.map(
-        ({ name, itemId }) => ({ name, value: itemId } as Choice),
+      name: 'serviceId',
+      choices: getServices().map(
+        ({ id, name }) => ({ name, value: id } as Choice),
       ),
     },
   ]);
+
+  const service = await getService(serviceId);
+  if (!service) throw new Error('INVALID Service');
 
   const Folder = await vCSA.getFolders({
     type: 'VIRTUAL_MACHINE',
@@ -66,33 +31,43 @@ export async function deployNode(): Promise<void> {
   });
   if (!Folder) throw new Error();
 
-  const VMTemplate = await vCSA.getVMTemplate(coreTemplateId);
+  const VMTemplate = await vCSA.getVMTemplate(service.coreTemplateId);
+
+  console.log(VMTemplate, service);
 
   const spinner = ora('Deploying node');
 
   spinner.start();
-  const newNodeId = await vCSA.depoyVMTemplate(coreTemplateId, {
-    placement: { host: host, folder: Folder[0].folder },
+
+  const nodeName = `${service.name}-prod`;
+  const newNodeId = await vCSA.depoyVMTemplate(service.coreTemplateId, {
+    placement: { host: service.hostId, folder: Folder[0].folder },
     hardware_customization: {
       nics: [
         {
           key: VMTemplate.nics[0].key,
           value: {
-            network: nodeNetwork,
+            network: service.networkId,
           },
         },
       ],
     },
-    name: name,
-    disk_storage: { datastore: nodeDatastore },
+    name: nodeName,
+    disk_storage: { datastore: service.dataStoreId },
     vm_home_storage: {
-      datastore: nodeDatastore,
+      datastore: service.dataStoreId,
     },
   });
 
+  pushNewNode({
+    name: nodeName,
+    coreTemplateId: service.coreTemplateId,
+    id: newNodeId,
+    serviceId,
+  });
+
   spinner.stop();
+  console.log('Node Deployment finished. Starting Initial Provision');
 
-  pushNewNode({ name, id: newNodeId, coreTemplateId });
-
-  console.log('Node Deployment finished');
+  await initialProvision(newNodeId);
 }
