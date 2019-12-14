@@ -61,5 +61,5 @@ export async function initialProvision(nodeId: string): Promise<void> {
 
   await provisionSSHClient.close();
 
-  await spinner.start('Added SSH key');
+  await spinner.stop();
 }

@@ -6,6 +6,7 @@ import ora from 'ora';
 import { initialProvision } from '../Provisioner/SSH/Actions';
 import { getServices, getService } from '../Services';
 import { pushNewNode } from '../Nodes';
+import { processConfigurationFile } from '../ConfigurationFile';
 
 export async function deployNode(): Promise<void> {
   const credentials = await loadSession();
@@ -32,8 +33,6 @@ export async function deployNode(): Promise<void> {
   if (!Folder) throw new Error();
 
   const VMTemplate = await vCSA.getVMTemplate(service.coreTemplateId);
-
-  console.log(VMTemplate, service);
 
   const spinner = ora('Deploying node');
 
@@ -70,4 +69,5 @@ export async function deployNode(): Promise<void> {
   console.log('Node Deployment finished. Starting Initial Provision');
 
   await initialProvision(newNodeId);
+  await processConfigurationFile(newNodeId);
 }

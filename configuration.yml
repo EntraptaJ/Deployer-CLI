@@ -5,6 +5,7 @@ install:
   - gnupg-agent
   - software-properties-common
   - git
+  - apache2
 exec:
   - 'mkdir data'
   - 'git clone http://KristianFJones:${_GITHUB_TOKEN}@github.com/KristianFJones/Gaming-Server-LC.git'
