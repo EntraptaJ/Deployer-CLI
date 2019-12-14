@@ -3,6 +3,9 @@ import { ServiceNetwork, ServiceNetworkType } from '../';
 import inquirer, { Answers, QuestionCollection } from 'inquirer';
 import Choice from 'inquirer/lib/objects/choice';
 
+/**
+ * Inquirer questions for Network Creation
+ */
 const networkQuestions: QuestionCollection<Answers>[] = [
   {
     name: 'type',
@@ -25,6 +28,10 @@ const networkQuestions: QuestionCollection<Answers>[] = [
   },
 ];
 
+/**
+ * Prompts user for input of A & B Networks
+ * @returns The user's input for networkA & networkB
+ */
 export async function promptForServiceNetworks(): Promise<{
   networkA: ServiceNetwork;
   networkB: ServiceNetwork;

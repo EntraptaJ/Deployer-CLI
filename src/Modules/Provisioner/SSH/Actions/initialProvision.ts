@@ -1,20 +1,22 @@
 // src/Modules/Provisioner/SSH/Actions/initialProvision.ts
 import {} from '@johnls/ssh2-promise';
+import ora from 'ora';
 import pRetry from 'p-retry';
-import { loadSession, createSession } from '../../../Controller/vCenter';
-import { getNode } from '../../../Nodes';
+import { loadSession } from '../../../Controller/vCenter';
 import { getCoreTemplate } from '../../../CoreTemplates';
+import { getNode } from '../../../Nodes';
 import { loginUserSSH } from './connectSSH';
 import { getSSHKeys } from './getSSHKey';
-import ora from 'ora';
 
 const timeout = (ms: number): Promise<void> =>
   new Promise(resolve => setTimeout(resolve, ms));
 
+/**
+ * Preforms initial provisioning of a Controller Node
+ * @param nodeId Node Id of the Controller node to provision
+ */
 export async function initialProvision(nodeId: string): Promise<void> {
-  const credentials = await loadSession();
-
-  const vCSA = await createSession(credentials);
+  const vCSA = await loadSession();
 
   const spinner = ora('Powering on VM');
   try {
@@ -32,10 +34,10 @@ export async function initialProvision(nodeId: string): Promise<void> {
   });
 
   const node = getNode(nodeId);
+  if (!node) throw new Error('INVALID NODE');
 
   const coreTemplate = getCoreTemplate(node.coreTemplateId);
-
-  console.log(node, coreTemplate);
+  if (!coreTemplate) throw new Error('INVALID CORE TEMPLATE');
 
   console.log('Initial Provision Node');
 
@@ -50,6 +52,15 @@ export async function initialProvision(nodeId: string): Promise<void> {
     }),
     getSSHKeys(),
   ]);
+
+  /**
+   * Create a SSH socket on the Node so we can
+   * echo user's password to stdin and
+   * then sudo su root to then echo Deploy's private SSH key to
+   * be able to use the root user with SSH private key auth on future connections
+   */
+
+  spinner.start('Escalating and adding SSH Key');
 
   const socket = await provisionSSHClient.shell();
   await socket.write(`echo '${coreTemplate.password}' | sudo -S ls\n`);

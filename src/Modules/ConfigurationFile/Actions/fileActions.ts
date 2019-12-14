@@ -1,10 +1,10 @@
 // src/Modules/ConfigurationFile/Actions/fileActions.ts
 import { pathExists, readFile } from 'fs-extra';
+import { parse } from 'yaml';
 import {
   Configuration,
   defaultConfigurationFileName,
 } from '../ConfigurationFile';
-import { parseConfigurationFile } from './parseConfigurationFile';
 
 export async function readConfigurationFile(
   filePath = `./${defaultConfigurationFileName}`,
@@ -14,5 +14,5 @@ export async function readConfigurationFile(
 
   const configurationFile = await readFile(filePath);
 
-  return parseConfigurationFile(configurationFile.toString());
+  return parse(configurationFile.toString());
 }

@@ -1,5 +1,4 @@
 // src/Modules/CoreTemplates/index.ts
 export * from './CoreTemplate';
-export * from './createCoreTemplate';
-export * from './getCoreTemplates';
-export * from './getCoreTemplate';
+export * from './Actions';
+export * from './Prompt';

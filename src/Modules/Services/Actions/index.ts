@@ -2,3 +2,4 @@
 export * from './promptForServiceInput';
 export * from './serviceState';
 export * from './promptForServiceNetworks';
+export * from './performLifecycle';

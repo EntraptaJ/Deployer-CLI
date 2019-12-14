@@ -1,8 +1,10 @@
-// src/Modules/Controller/vCenter/Auth/promptAuth.ts
+// src/Modules/Controller/vCenter/Auth/Prompts/AuthPrompt.ts
 import inquirer from 'inquirer';
-import { Credential } from './Credentials';
-import { saveAuth } from './saveAuth';
+import { saveAuth, Credential } from '..';
 
+/**
+ * Prompt User for Controller username/password
+ */
 export async function promptAuth(): Promise<Credential> {
   const { url, username, password } = await inquirer.prompt([
     {

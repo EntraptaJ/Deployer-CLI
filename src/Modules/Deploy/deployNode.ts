@@ -1,17 +1,18 @@
 // src/Modules/Deploy/deployNode.ts
-import { loadSession, createSession } from '../Controller/vCenter';
 import inquirer from 'inquirer';
 import Choice from 'inquirer/lib/objects/choice';
 import ora from 'ora';
-import { initialProvision } from '../Provisioner/SSH/Actions';
-import { getServices, getService } from '../Services';
-import { pushNewNode } from '../Nodes';
 import { processConfigurationFile } from '../ConfigurationFile';
+import { loadSession } from '../Controller/vCenter';
+import { pushNode } from '../Nodes';
+import { initialProvision } from '../Provisioner/SSH/Actions';
+import { getService, getServices } from '../Services';
 
+/**
+ * Prompts the user for what Service they want to deploy a new node of.
+ */
 export async function deployNode(): Promise<void> {
-  const credentials = await loadSession();
-
-  const vCSA = await createSession(credentials);
+  const vCSA = await loadSession();
 
   const { serviceId } = await inquirer.prompt([
     {
@@ -58,7 +59,7 @@ export async function deployNode(): Promise<void> {
     },
   });
 
-  pushNewNode({
+  pushNode({
     name: nodeName,
     coreTemplateId: service.coreTemplateId,
     id: newNodeId,

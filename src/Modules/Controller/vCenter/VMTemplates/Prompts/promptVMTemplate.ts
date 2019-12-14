@@ -1,13 +1,14 @@
 // src/Modules/Controller/vCenter/VMTemplates/promptVMTemplate.ts
 import inquirer from 'inquirer';
 import Choice from 'inquirer/lib/objects/choice';
-import { createSession, loadSession } from '../Auth';
-import { getVMTemplates } from './getVMTemplates';
+import { loadSession } from '../../Auth';
+import { getVMTemplates } from '..';
 
+/**
+ * Prompts user for selection of a Core Template from a list
+ */
 export async function promptVMTemplate(): Promise<string> {
-  const credentials = await loadSession();
-
-  const vCSA = await createSession(credentials);
+  const vCSA = await loadSession();
 
   const VMTemplates = await getVMTemplates(vCSA);
 

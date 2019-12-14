@@ -1,5 +1,5 @@
 // src/Modules/Controller/vCenter/VMTemplates/getVMTemplates.ts
-import { vCenter, ContentLibraryItem } from 'ts-vcenter';
+import { ContentLibraryItem, vCenter } from 'ts-vcenter';
 
 export async function getVMTemplates(
   vCSA: vCenter,

@@ -1,23 +1,20 @@
 // src/Modules/Services/Actions/promptForServiceInput.ts
 import inquirer from 'inquirer';
 import Choice from 'inquirer/lib/objects/choice';
-import {
-  createSession,
-  getNetworks,
-  loadSession,
-} from '../../Controller/vCenter';
+import { getNetworks, loadSession } from '../../Controller/vCenter';
 import { getDataStores } from '../../Controller/vCenter/DataStore';
 import { getHosts } from '../../Controller/vCenter/Host';
 import { getCoreTemplates } from '../../CoreTemplates';
 import { pushService } from './';
 import { promptForServiceNetworks } from './promptForServiceNetworks';
 
+/**
+ * Prompts User for all fields required to create a new Service Entity
+ */
 export async function promptForServiceInput(): Promise<void> {
-  const credentials = await loadSession();
+  const vCSA = await loadSession();
 
-  const vCSA = await createSession(credentials);
-
-  const [networks, datastores, coreTemplates, hosts] = await Promise.all([
+  const [networks, dataStores, coreTemplates, hosts] = await Promise.all([
     getNetworks(vCSA),
     getDataStores(vCSA),
     getCoreTemplates(),
@@ -51,7 +48,7 @@ export async function promptForServiceInput(): Promise<void> {
     {
       type: 'list',
       name: 'dataStoreId',
-      choices: datastores.map(
+      choices: dataStores.map(
         ({ name, datastore }) => ({ name, value: datastore } as Choice),
       ),
     },
@@ -64,6 +61,7 @@ export async function promptForServiceInput(): Promise<void> {
     },
   ]);
 
+  // Push the input into Deployer's Service State
   pushService({
     name,
     networkId,

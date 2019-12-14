@@ -1,29 +1,64 @@
 // src/Actions/index.ts
+import inquirer from 'inquirer';
+import Choice from 'inquirer/lib/objects/choice';
 import { readConfigurationFile } from '../ConfigurationFile';
 import { ensureAuth } from '../Controller/vCenter';
-import { logout } from '../Controller/vCenter/Auth/logout';
-import { createCoreTemplate } from '../CoreTemplates';
+import { logoutAuth } from '../Controller/vCenter/Auth';
+import { createCoreTemplatePrompt } from '../CoreTemplates';
 import { deployNode } from '../Deploy';
 import { loadEnvironmentSecrets } from '../Environment';
-import { NodeInfoMenu } from '../Nodes';
-import { getNodes } from '../Nodes/getNodes';
-import inquirer = require('inquirer');
-import Choice = require('inquirer/lib/objects/choice');
+import { getNodes, NodeInfoMenu } from '../Nodes';
+import {
+  getServices,
+  promptForServiceInput,
+  preformLifecycle,
+} from '../Services';
 import { state } from '../State';
-import { promptForServiceInput, getServices } from '../Services';
+import { promptForService } from '../Services/Prompts';
 
+/**
+ * CLI Command Option
+ */
 interface Option {
+  /**
+   * Inquirer Option Flag
+   */
   flags: string;
+
+  /**
+   * Inquirer Option Description
+   */
   description: string;
 }
 
+/**
+ * CLI Command
+ */
 interface Action {
+  /**
+   * Command to register with inquirer
+   */
   command: string;
+
+  /**
+   * Description to register with inquirer
+   */
   description: string;
+
+  /**
+   * Action to preform on Command invocation
+   */
   action: (...args: any[]) => any;
+
+  /**
+   * Optional options to provide to inquirer
+   */
   option?: Option[];
 }
 
+/**
+ * Array of Inquirer Commands
+ */
 export const actions: Action[] = [
   {
     command: 'auth:login',
@@ -33,12 +68,12 @@ export const actions: Action[] = [
   {
     command: 'auth:logout',
     description: 'Forget the Controller credentials from system',
-    action: () => logout(),
+    action: () => logoutAuth(),
   },
   {
     command: 'coreTemplate:create',
     description: 'Create VMTemplate',
-    action: () => createCoreTemplate(),
+    action: createCoreTemplatePrompt,
   },
   {
     command: 'node:deploy',
@@ -102,7 +137,7 @@ export const actions: Action[] = [
   {
     command: 'service:create',
     description: 'Create new service',
-    action: () => promptForServiceInput(),
+    action: promptForServiceInput,
   },
   {
     command: 'service:list',
@@ -125,5 +160,13 @@ export const actions: Action[] = [
     command: 'service:deploy',
     description: 'Deploys a new node of a service',
     action: async () => {},
+  },
+  {
+    command: 'service:lifecycle',
+    description: 'Lifecycles a service',
+    action: async () => {
+      const serviceId = await promptForService();
+      await preformLifecycle(serviceId);
+    },
   },
 ];

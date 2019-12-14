@@ -12,6 +12,10 @@ interface SSHKeys {
   pubKey: string;
 }
 
+/**
+ * Retrieves or creates a Private/Public SSH Key
+ * @returns Private & Public SSH Key
+ */
 export async function getSSHKeys(): Promise<SSHKeys> {
   let sshState = (await state.get('ssh')) as SSHKeys | undefined;
 
@@ -31,6 +35,11 @@ export async function getSSHKeys(): Promise<SSHKeys> {
   return sshState;
 }
 
+/**
+ * Takes the Deployer's Private SSH Key and outputs to a temporary file on host to use for
+ * connecting to a host using SSH2-Promises
+ * @returns temporary path (generated with `tempy`) to Deployer's private SSH key
+ */
 export async function getPrivateKeyTempPath(): Promise<string> {
   const tempPath = file();
 
