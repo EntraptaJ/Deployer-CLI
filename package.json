@@ -1,0 +1,44 @@
+{
+  "name": "ts-cli-template",
+  "version": "0.0.1",
+  "description": "TypeScript based CLI template",
+  "main": "dist/index.js",
+  "bin": {
+    "ts-cli": "dist/index.js"
+  },
+  "scripts": {
+    "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "dev": "ts-node src/index.ts",
+    "create": "rm -rf ./dist && npm run build && npm run test",
+    "build": "tsc -p ./tsconfig.build.json",
+    "test": "sudo npm i -g && ts-cli",
+    "refresh": "rm -rf ./node_modules ./package-lock.json && npm install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/K-FOSS/TS-CLI-Template.git"
+  },
+  "keywords": [
+    "TypeScript",
+    "CLI",
+    "KristianFJones"
+  ],
+  "author": "Kristian Jones <me@kristianjones.dev>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/K-FOSS/TS-CLI-Template/issues"
+  },
+  "homepage": "https://github.com/K-FOSS/TS-CLI-Template#readme",
+  "devDependencies": {
+    "@types/node": "^12.12.17",
+    "@types/yargs": "^13.0.3",
+    "nodemon": "^2.0.2",
+    "ts-node": "^8.5.4",
+    "typescript": "^3.7.3"
+  },
+  "dependencies": {
+    "commander": "^4.0.1",
+    "conf": "^6.2.0",
+    "yargs": "^15.0.2"
+  }
+}
